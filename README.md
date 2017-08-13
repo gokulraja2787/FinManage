@@ -1,0 +1,2 @@
+# FinManage
+Home finance management.
