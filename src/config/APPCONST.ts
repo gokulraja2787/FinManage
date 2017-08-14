@@ -11,4 +11,10 @@ export const MYAPPCONFIG = {
 
 export class APPCONST {
 
+    /**
+     * name
+     */
+    public getAppName() {
+        return MYAPPCONFIG.appName;
+    }
 }
