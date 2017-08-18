@@ -53,7 +53,11 @@ function doGet(req, res, resStatus) {
         appDet = {'URL': req.url, 'Status':'Not Found'};
     }
     s = JSON.stringify(appDet);
-    res.writeHead(resStatus,{'Content-Type':'application/json', 'Content-Length':s.length});
+    res.writeHead(resStatus,{'Content-Type':'application/json', 
+    'Content-Length':s.length,
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'application/json',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT'});
     res.write(s);
     res.end();
 }
