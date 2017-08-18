@@ -4,6 +4,7 @@ import { MYAPPCONFIG } from '../config/APPCONST';
 import { CGIAppDetails } from './type/cgiapp-details';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import { Callbackable } from './type/callbackable';
 
 @Injectable()
 export class GatewayService {
@@ -17,7 +18,7 @@ export class GatewayService {
    /**
     * Performs GET http://localhost:4301/whoareyou
     */
-  public whoAreYou(callbackObj) {
+  public whoAreYou(callbackObj: Callbackable) {
     const serviceUrl = this.baseUrl + 'whoareyou';
     let result: CGIAppDetails;
     this.http.get(serviceUrl, {headers: this.getHeaders(), }).map(response => response.json())
@@ -25,7 +26,7 @@ export class GatewayService {
       data => result = new CGIAppDetails(data.appName, data.appVersion),
       error => console.error('Something wrong!!!'),
         // () => console.log('OK ' + result)
-        () => callbackObj.setUpValue(result)
+        () => callbackObj.setupValue(result)
       );
     // console.log('Post Result ' + result);
   }

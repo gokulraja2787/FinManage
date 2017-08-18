@@ -5,13 +5,14 @@ import { Component, OnInit } from '@angular/core';
 import { MYAPPCONFIG } from '../config/APPCONST';
 import { CGIAppDetails } from './type/cgiapp-details';
 import { GatewayService } from './gateway.service';
+import { Callbackable } from './type/callbackable';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, Callbackable {
 
   title = MYAPPCONFIG.appTitle;
   ver = MYAPPCONFIG.appVer;
@@ -22,15 +23,11 @@ export class AppComponent implements OnInit {
 
   constructor(private gateWayService: GatewayService) {  }
 
-  private getCGIDetails(){
-      this.gateWayService.whoAreYou(this);
-    }
-
   ngOnInit(): void {
-    this.getCGIDetails();
+    this.gateWayService.whoAreYou(this);
   }
 
-  public setUpValue(cgiDetails: CGIAppDetails) {
+  public setupValue(cgiDetails: CGIAppDetails) {
     console.log('Callback result: ' + cgiDetails);
     this.cgiAppName = cgiDetails.getAppName();
     this.cgiAppVer = cgiDetails.getAppVersion();

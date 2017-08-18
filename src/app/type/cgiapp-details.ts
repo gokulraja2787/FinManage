@@ -1,11 +1,15 @@
 /**
  * Holds CGI App details
  */
-export class CGIAppDetails {
+
+ import { AppModel } from './app-model';
+
+export class CGIAppDetails extends AppModel {
     private appName: string;
     private appVersion: string;
 
     constructor(appName: string, appVersion: string) {
+        super();
         this.appName = appName;
         this.appVersion = appVersion;
     }
