@@ -7,9 +7,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
+  email: string;
+  errorMsg: string;
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  login() {
+    if(this.email == null || this.email.trim() === '') {
+      this.errorMsg = 'Please enter a valid email address';
+    } else {
+      this.errorMsg = '';
+    }
+  }
 }

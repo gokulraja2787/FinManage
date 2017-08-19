@@ -6,6 +6,10 @@ import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Callbackable } from './type/callbackable';
 
+/**
+ * Common HTTP gateway service
+ */
+
 @Injectable()
 export class GatewayService {
 
@@ -20,6 +24,10 @@ export class GatewayService {
     */
   public whoAreYou(callbackObj: Callbackable) {
     const serviceUrl = this.baseUrl + 'whoareyou';
+    this.makeHttpGet(serviceUrl, callbackObj);
+  }
+
+  private makeHttpGet(serviceUrl: string, callbackObj: Callbackable) {
     let result: CGIAppDetails;
     this.http.get(serviceUrl, {headers: this.getHeaders(), }).map(response => response.json())
     .subscribe(
@@ -28,7 +36,6 @@ export class GatewayService {
         // () => console.log('OK ' + result)
         () => callbackObj.setupValue(result)
       );
-    // console.log('Post Result ' + result);
   }
 
   private getHeaders(): Headers{
