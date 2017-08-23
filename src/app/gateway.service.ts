@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { MYAPPCONFIG } from '../config/APPCONST';
-import { CGIAppDetails } from './type/cgiapp-details';
+// import { CGIAppDetails } from './type/cgiapp-details';
+import { AppModel } from './type/app-model';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Callbackable } from './type/callbackable';
@@ -27,11 +28,16 @@ export class GatewayService {
     this.makeHttpGet(serviceUrl, callbackObj);
   }
 
+  public getAllUser(callbackObj: Callbackable) {
+    const serviceUrl = this.baseUrl + 'users/list';
+    this.makeHttpGet(serviceUrl, callbackObj);
+  }
+
   private makeHttpGet(serviceUrl: string, callbackObj: Callbackable) {
-    let result: CGIAppDetails;
-    this.http.get(serviceUrl, {headers: this.getHeaders(), }).map(response => response.json())
+    let result: AppModel;
+    this.http.get(serviceUrl, {headers: this.getHeaders() }).map(response => response.json())
     .subscribe(
-      data => result = new CGIAppDetails(data.appName, data.appVersion),
+      data => result = callbackObj.getAppModel(data),
       error => console.error('Something wrong!!!'),
         // () => console.log('OK ' + result)
         () => callbackObj.setupValue(result)

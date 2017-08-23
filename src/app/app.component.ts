@@ -4,6 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MYAPPCONFIG } from '../config/APPCONST';
 import { CGIAppDetails } from './type/cgiapp-details';
+import { AppModel } from './type/app-model';
 import { GatewayService } from './gateway.service';
 import { AuthenticationService } from './authentication.service';
 import { Router } from '@angular/router';
@@ -40,9 +41,14 @@ export class AppComponent implements OnInit, Callbackable {
   }
 
   public setupValue(cgiDetails: CGIAppDetails) {
-    console.log('Callback result: ' + cgiDetails);
     this.cgiAppName = cgiDetails.getAppName();
     this.cgiAppVer = cgiDetails.getAppVersion();
+  }
+
+  public getAppModel(jsonResult: any): AppModel {
+    let cgiDetails: CGIAppDetails;
+    cgiDetails = new CGIAppDetails(jsonResult.appName,jsonResult.appVersion);
+    return cgiDetails;
   }
 
   private toggleNavbarLinks(mode: boolean) {

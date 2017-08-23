@@ -1,31 +1,39 @@
 <div class="container">
-    <div class="col-md-6">
-      <div class="title">
-          Please login
-      </div>
-      <hr/>
-      <div class="panel-body form-group has-danger">
-          <div class="row">
-              <div class="input-field col s12">
-                  <label class="sr-only" for="email">Email</label>
-                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 title">
+            <h5>Please login</h5>
+         <hr/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 input-field">
+            <div [attr.class]="hasFormError ? 'panel-body form-group has-danger' : 'panel-body form-group'">
+                <label class="sr-only" for="email">Email</label>
+                <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                     <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-at"></i></div>
-                    <input [(ngModel)]="email" id="email" 
-                        type="email" class="validate form-control" placeholder="you@example.com" required autofocus>
-                  </div>
-              </div>
-          </div>
-
-          <span>{{errorMsg}}</span>
-
-          <div class="row" style="padding-top: 1rem">
-              <div class="col-md-3"></div>
-              <div class="col-md-6">
-                <button (click)="login()" 
-                  class="btn waves-effect waves-light" 
-                  type="submit" name="action">Login</button>
+                    <!-- <input [(ngModel)]="email" id="email" 
+                        type="email" class="validate form-control" placeholder="you@example.com" required autofocus> -->
+                        <select id='email' class="form-control" [(ngModel)]="email">
+                            <option value="-1" selected>Please Select One value</option>
+                            <option *ngFor="let user of userDetails" value="{{user.getEmail()}}">{{user.getEmail()}}</option>
+                        </select>
                 </div>
-          </div>
-      </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-control-feedback">
+                <span class="text-danger align-middle">{{errorMsg}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 1rem">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <button (click)="login()" class="btn waves-effect waves-light"
+            type="submit" name="action">Login</button>
+            <a class="btn btn-link" roputerLink="#" href="#">Register</a>
+        </div>
     </div>
 </div>

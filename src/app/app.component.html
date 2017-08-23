@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" *ngFor="let item of navbarLinks">
-          <a [attr.class]="item.disabled ? 'nav-link disabled' : 'nav-link'" [routerLink]="[item.link]" routerLinkActive="active">{{item.text}}</a>
+          <a [attr.class]="item.disabled ? 'nav-link disabled' : 'nav-link'" [routerLink]="item.disabled ? '#' : [item.link]" routerLinkActive="active">{{item.text}}</a>
         </li>
       </ul>
     </div>
