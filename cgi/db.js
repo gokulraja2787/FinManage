@@ -42,7 +42,6 @@ exports.FinmanDb = function(homeLocation) {
                     console.log('Inserting app version...');
                     var stmt = __db.prepare(SQLS.createSchema.insertVersion);
                     var appDet = readConfig("./cgi/CONST.json");
-                    console.log(appDet);
                     stmt = stmt.run(appDet.appName, appDet.appVersion, function(err) {
                         if (err) {
                             console.log('error');
@@ -67,30 +66,55 @@ exports.FinmanDb = function(homeLocation) {
         return getHomeDir();
     }
 
-    this.getAllUsers = function() {
-        var result = {};
-        result.message = 'list';
-        result.items = [];
+    this.getAllUsers = function(callback, res, resStatus) {
         openDb();
         __db.serialize(function(){
-            __db.each(SQLS.users.getAllEmails, function (err, rows) {
+            var result = {};
+            result.message = 'list';
+            result.items = [];
+            __db.each(SQLS.users.getAllEmails, function (err, row) {
                 if (err) {
                     console.error('Error in getting emails ');
                     console.error(err);
                     result.message = 'error';
                     result.items = 'Error occured while picking user details: ' + err;
                 } else {
-                    result.message = 'list';
-                    result.items = [];
-                    rows.forEach(function(row){
-                        result.items.push(row);
-                    });
+                    result.items.push(row.email);
+                }
+            }, function(err) {
+                if (err) {
+                    console.error('Error in getting emails ');
+                    console.error(err);
+                    result.message = 'error';
+                    result.items = 'Error occured while picking user details: ' + err;
+                } else {
+                    callback(res, result, resStatus);
                 }
             });
+            closeDb();
         });
-        closeDb();
-        var resultStr = JSON.stringify(result);
-        return result;
+    }
+
+    this.addUser = function(callback, res, resStatus, firstName, lastName, email) {
+        var result = {};
+        result.message = 'success';
+        result.userModel = {};
+        result.userModel.firstName = firstName;
+        result.userModel.lastName = lastName;
+        result.userModel.email = email;
+        openDb();
+        __db.serialize(function(){
+            var stmt = __db.prepare(SQLS.users.addUser);
+            stmt = stmt.run(firstName, lastName, email, function(err) {
+                if (err) {
+                    console.log('Error while inserting record ' + err);
+                    result.message = 'fail';
+                    result.userModel = 'DB ERROR';
+                }
+                callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
     }
 }
 

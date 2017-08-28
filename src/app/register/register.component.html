@@ -1,9 +1,43 @@
 <div class="container">
-  <div class="row centered-form">
-      <div class="col-md-3"></div>
-      <div class="col-md-6 title">
-          <h5>Registration form</h5>
-        <hr/>
+  <div class="row ">
+      <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h5 class="panel-heading">Registration form</h5><hr/>
+              </div>
+          </div>
+          <div class="panel-body">
+              <form role="form">
+                  <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 has-error control-label">
+                            <label>{{errMsg}}</label>
+                        </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xs-6 col-sm-6 col-md-6">
+                          <div [attr.class]="fnameHasError ? 'form-group has-danger' : 'form-group'">
+                              <input required type="text" name="first_name" id="first_name" class="form-control input-sm" placeholder="First Name" [(ngModel)]="fname">
+                            </div>
+                      </div>
+                      <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div [attr.class]="lnameHasError ? 'form-group has-danger' : 'form-group'">
+                          <input required type="text" name="last_name" id="last_name" class="form-control input-sm" placeholder="Last Name" [(ngModel)]="lname">
+                        </div>
+                      </div>
+                  </div>
+                  <!--<div class="row">
+                    <div class="col-xs-1 col-sm-8 col-md-6"> -->
+                      <div [attr.class]="emailHasError ? 'form-group has-danger' : 'form-group'">
+                        <input type="email" name="email" id="email" class="form-control input-sm" placeholder="Email Address" [(ngModel)]="email"
+                        required pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                      </div>
+                   <!-- </div>
+                  </div>-->
+                  <button type="submit" value="Register" class="btn btn-info btn-block" name="action" (click)="register()">
+                    Register
+                  </button>
+              </form>
+          </div>
       </div>
   </div>
 </div>

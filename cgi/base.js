@@ -53,6 +53,10 @@ http.createServer(function(req, res){
             resStatus = 200;
             doGet(req, res, resStatus);
         break;
+        case 'POST':
+            resStatus = 200
+            doPost(req, res, resStatus);
+        break;
         default :
             resStatus = 405;
     }
@@ -72,12 +76,17 @@ function doGet(req, res, resStatus) {
     var context = req.url;
     if(context.endsWith("/whoareyou")) {
         resjson = readConfig("./cgi/CONST.json");
+        writeResponse(res, resjson, resStatus);
     } else if(context.endsWith("/users/list")) {
-        resjson = d.getAllUsers();
+        resjson = d.getAllUsers(writeResponse, res, resStatus);
     } else {
         resStatus = '404';
         resjson = {'URL': req.url, 'Status':'Not Found'};
+        writeResponse(res, resjson, resStatus);
     }
+}
+
+function writeResponse(res, resjson, resStatus) {
     s = JSON.stringify(resjson);
     if (null === s || undefined === s) {
         s = '{"message":"error", "items":"back end error"}';
@@ -89,4 +98,29 @@ function doGet(req, res, resStatus) {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT'});
     res.write(s);
     res.end();
+}
+
+/**
+ * Defines operations for HTTP POST method
+ * 
+ * @param {} req 
+ * @param {} res 
+ * @param {} resStatus
+ */
+function doPost(req, res, resStatus) {
+    var context = req.url;
+    if(context.indexOf('/users/add') > -1) {
+        var bdy = '', POST = { };
+        req.on('data', function(data) {
+            bdy += data;
+        });
+        req.on('end',function(){
+            POST = JSON.parse(bdy);
+            resjson = d.addUser(writeResponse, res, resStatus, POST.firstName, POST.lastName, POST.email);
+        });
+    } else {
+        resStatus = '404';
+        resjson = {'URL': req.url, 'Status':'Not Found'};
+        writeResponse(res, resjson, resStatus);
+    }
 }

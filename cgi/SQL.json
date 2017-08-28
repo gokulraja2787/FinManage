@@ -6,6 +6,7 @@
         "insertVersion": "INSERT INTO tapp (appname, appversion) VALUES (?, ?)"
     },
     "users": {
-        "getAllEmails": "SELECT email FROM tuser"
+        "getAllEmails": "SELECT email FROM tuser",
+        "addUser": "INSERT INTO tuser (firstname, lastname, email) VALUES (?, ?, ?)"
     }
 }

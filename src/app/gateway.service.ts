@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { MYAPPCONFIG } from '../config/APPCONST';
 // import { CGIAppDetails } from './type/cgiapp-details';
-import { AppModel } from './type/app-model';
+import { AppModel, UserModel } from './type/app-model';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Callbackable } from './type/callbackable';
@@ -33,6 +33,16 @@ export class GatewayService {
     this.makeHttpGet(serviceUrl, callbackObj);
   }
 
+  public addUser(callbackObj: Callbackable, user: UserModel) {
+    const serviceUrl = this.baseUrl + 'users/add';
+    const parms: any = {};
+    parms.firstName = user.getFirstName();
+    parms.lastName = user.getLastName();
+    parms.email = user.getEmail();
+    const params: {} = <JSON>parms;
+    this.makeHttpPost(serviceUrl, params, callbackObj);
+  }
+
   private makeHttpGet(serviceUrl: string, callbackObj: Callbackable) {
     let result: AppModel;
     this.http.get(serviceUrl, {headers: this.getHeaders() }).map(response => response.json())
@@ -42,6 +52,18 @@ export class GatewayService {
         // () => console.log('OK ' + result)
         () => callbackObj.setupValue(result)
       );
+  }
+
+  private makeHttpPost(serviceUrl: string, params: {}, callbackObj: Callbackable) {
+    let result: AppModel;
+    this.http
+      .post(serviceUrl, JSON.stringify(params), {headers: this.getHeaders() })
+      .map(response => response.json())
+      .subscribe(
+        data => result = callbackObj.getAppModel(data),
+        error => console.error('Something wrong!!!'),
+          // () => console.log('OK ' + result)
+          () => callbackObj.setupValue(result));
   }
 
   private getHeaders(): Headers{

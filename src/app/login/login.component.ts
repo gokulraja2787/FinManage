@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit, Callbackable {
 
   constructor(private gateway: GatewayService) {
     this.hasFormError = false;
+    this.email = '-1';
    }
 
   ngOnInit() {
