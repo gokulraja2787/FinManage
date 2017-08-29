@@ -30,7 +30,7 @@ export class AppComponent implements OnInit, Callbackable {
 
   navbarLinks = [{link: '/home', text: 'Home', disabled: false},
       {link: '/bam', text: 'Bank Account Management', disabled: false},
-      {link: '/bs', text: 'Budget Sheet', disabled: true}];
+      {link: '/bs', text: 'Budget Sheet', disabled: false}];
 
   constructor(private gateWayService: GatewayService,
     private authService: AuthenticationService,

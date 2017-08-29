@@ -14,12 +14,14 @@ import { HomeComponent } from './home/home.component';
 import { BamComponent } from './bam/bam.component';
 import { AuthenticationService } from './authentication.service';
 import { RegisterComponent } from './register/register.component';
+import { BsComponent } from './bs/bs.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'bam', component: BamComponent },
   {path: 'register', component: RegisterComponent},
+  {path: 'bs', component: BsComponent},
   {
     path: '' ,
     redirectTo: '/home',
@@ -33,7 +35,8 @@ const appRoutes: Routes = [
     LoginComponent,
     HomeComponent,
     BamComponent,
-    RegisterComponent
+    RegisterComponent,
+    BsComponent
   ],
   imports: [
     BrowserModule,
