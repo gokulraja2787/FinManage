@@ -24,6 +24,10 @@ export class AppComponent implements OnInit, Callbackable {
   cgiAppName: string;
   cgiAppVer: string;
 
+  email: string;
+  fname: string;
+  lname: string;
+
   navbarLinks = [{link: '/home', text: 'Home', disabled: false},
       {link: '/bam', text: 'Bank Account Management', disabled: false},
       {link: '/bs', text: 'Budget Sheet', disabled: true}];
@@ -40,6 +44,12 @@ export class AppComponent implements OnInit, Callbackable {
       this.router.navigate(['/login']);
       this.toggleNavbarLinks(true);
     }
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+    this.toggleNavbarLinks(true);
   }
 
   public setupValue(cgiDetails: CGIAppDetails) {

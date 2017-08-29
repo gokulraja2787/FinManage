@@ -69,20 +69,30 @@ export class AuthenticationService implements Callbackable{
     * Check if use active login exist
     */
    public checkLogin(): boolean {
-     return this.isAlreadyLoggedIn();
+     const alreadyLoggedIn: boolean = this.isAlreadyLoggedIn();
+     if (alreadyLoggedIn) {
+      this.appComponent.toggleNavbarLinks(false);
+      this.appComponent.fname = sessionStorage.getItem(STORE_FNAME);
+      this.appComponent.lname = sessionStorage.getItem(STORE_LNAME);
+      this.appComponent.email = sessionStorage.getItem(STORE_EMAIL);
+     }
+     return alreadyLoggedIn;
    }
 
    setupValue(result: UserModel) {
     sessionStorage.setItem(STORE_FNAME, result.getFirstName());
     sessionStorage.setItem(STORE_LNAME, result.getLastName());
     this.appComponent.toggleNavbarLinks(false);
+    this.appComponent.fname = result.getFirstName();
+    this.appComponent.lname = result.getLastName();
+    this.appComponent.email = result.getEmail();
   }
 
   getAppModel(jsonResult: any): UserModel {
     const userModel: UserModel = new UserModel();
-    userModel.setEmail(jsonResult.email);
-    userModel.setFirstName(jsonResult.firstName);
-    userModel.setLastName(jsonResult.lastName);
+    userModel.setEmail(jsonResult.userModel.email);
+    userModel.setFirstName(jsonResult.userModel.firstName);
+    userModel.setLastName(jsonResult.userModel.lastName);
     return userModel;
   }
 
