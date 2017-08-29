@@ -1,30 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { GatewayService } from './gateway.service';
+import { UserModel } from './type/app-model';
+import { Callbackable } from './type/callbackable';
+import { AppComponent } from './app.component';
 
 /**
  * App's authentication service
  */
 
-const STORE_NAME = 'finMan.user';
+const STORE_EMAIL = 'finMan.email';
+const STORE_FNAME = 'finMan.fname';
+const STORE_LNAME = 'finMan.lname';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthenticationService implements Callbackable{
 
-  private localRouter: Router;
-  private httpGateway: GatewayService;
+  private appComponent: AppComponent;
 
-  constructor(_router: Router, _gateway: GatewayService) {
-    this.localRouter = _router;
-    this.httpGateway = _gateway;
-   }
+  constructor(private httpGateway: GatewayService) { }
 
    /**
     * Logout user and removes user from the store
     */
    public logout() {
-     localStorage.removeItem(STORE_NAME);
+     sessionStorage.removeItem(STORE_EMAIL);
+     sessionStorage.removeItem(STORE_FNAME);
+     sessionStorage.removeItem(STORE_LNAME);
    }
 
    /**
@@ -33,22 +35,22 @@ export class AuthenticationService {
     */
    public login(email: string): string {
      let redirectTo: string = null;
-     if (this.checkCredential(email)) {
-      localStorage.setItem(STORE_NAME, email);
+     if (null !== email || undefined !== email) {
+      sessionStorage.setItem(STORE_EMAIL, email);
       redirectTo = '/home';
+      this.loadUserDetails(email);
      } else {
       redirectTo = '/login';
      }
      return redirectTo;
    }
 
-   private checkCredential(email: string): boolean {
-     // TODO make HTTP to check if user is valid
-     return true;
+   private loadUserDetails(email: string) {
+     this.httpGateway.getUser(this, email);
    }
 
    private isAlreadyLoggedIn(): boolean {
-     if (localStorage.getItem(STORE_NAME) != null) {
+     if (null !== sessionStorage.getItem(STORE_EMAIL) && undefined !== sessionStorage.getItem(STORE_EMAIL)) {
        return true;
      } else {
       return false;
@@ -59,7 +61,7 @@ export class AuthenticationService {
     * Gets logged in user details from the store
     */
    public getLoggedInUser(): string {
-     const returnVal: string = localStorage.getItem(STORE_NAME);
+     const returnVal: string = sessionStorage.getItem(STORE_EMAIL);
      return returnVal;
    }
 
@@ -69,4 +71,22 @@ export class AuthenticationService {
    public checkLogin(): boolean {
      return this.isAlreadyLoggedIn();
    }
+
+   setupValue(result: UserModel) {
+    sessionStorage.setItem(STORE_FNAME, result.getFirstName());
+    sessionStorage.setItem(STORE_LNAME, result.getLastName());
+    this.appComponent.toggleNavbarLinks(false);
+  }
+
+  getAppModel(jsonResult: any): UserModel {
+    const userModel: UserModel = new UserModel();
+    userModel.setEmail(jsonResult.email);
+    userModel.setFirstName(jsonResult.firstName);
+    userModel.setLastName(jsonResult.lastName);
+    return userModel;
+  }
+
+  public setAppComponent(appComponent: AppComponent) {
+    this.appComponent = appComponent;
+  }
 }

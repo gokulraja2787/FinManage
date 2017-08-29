@@ -30,7 +30,9 @@ export class AppComponent implements OnInit, Callbackable {
 
   constructor(private gateWayService: GatewayService,
     private authService: AuthenticationService,
-    private router: Router) {  }
+    private router: Router) {
+      this.authService.setAppComponent(this);
+    }
 
   ngOnInit(): void {
     this.gateWayService.whoAreYou(this);
@@ -51,7 +53,7 @@ export class AppComponent implements OnInit, Callbackable {
     return cgiDetails;
   }
 
-  private toggleNavbarLinks(mode: boolean) {
+  public toggleNavbarLinks(mode: boolean) {
     for (const item of this.navbarLinks) {
       item.disabled = mode;
     }

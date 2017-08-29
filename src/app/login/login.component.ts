@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UserModel, AppModel, UserListModel } from '../type/app-model';
 import { GatewayService } from '../gateway.service';
+import { AuthenticationService } from '../authentication.service';
 import { Callbackable } from '../type/callbackable';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +17,8 @@ export class LoginComponent implements OnInit, Callbackable {
   hasFormError: boolean;
   userDetails: UserModel[];
 
-  constructor(private gateway: GatewayService) {
+  constructor(private gateway: GatewayService, private authService: AuthenticationService,
+    private router: Router) {
     this.hasFormError = false;
     this.email = '-1';
    }
@@ -31,6 +34,9 @@ export class LoginComponent implements OnInit, Callbackable {
     } else {
       this.errorMsg = '';
       this.hasFormError = false;
+      let navigateTo: string;
+      navigateTo = this.authService.login(this.email);
+      this.router.navigate([navigateTo]);
     }
   }
 

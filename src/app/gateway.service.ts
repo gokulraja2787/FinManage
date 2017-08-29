@@ -28,6 +28,11 @@ export class GatewayService {
     this.makeHttpGet(serviceUrl, callbackObj);
   }
 
+  public getUser(callbackObj: Callbackable, email: string) {
+    const serviceUrl = this.baseUrl + 'users/get?email=' + email;
+    this.makeHttpGet(serviceUrl, callbackObj);
+  }
+
   public getAllUser(callbackObj: Callbackable) {
     const serviceUrl = this.baseUrl + 'users/list';
     this.makeHttpGet(serviceUrl, callbackObj);
