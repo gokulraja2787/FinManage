@@ -7,6 +7,8 @@
     },
     "users": {
         "getAllEmails": "SELECT email FROM tuser",
-        "addUser": "INSERT INTO tuser (firstname, lastname, email) VALUES (?, ?, ?)"
+        "addUser": "INSERT INTO tuser (firstname, lastname, email) VALUES (?, ?, ?)",
+        "getUserByEmail": "SELECT firstname, lastname, email FROM tuser WHERE email = ?",
+        "deleteUserByEmail": "DELETE FROM tuser WHERE email = ?"
     }
 }

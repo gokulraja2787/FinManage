@@ -116,6 +116,51 @@ exports.FinmanDb = function(homeLocation) {
             stmt.finalize();
         });
     }
+
+    this.deleteUser = function(callback, res, resStatus, email) {
+        var result = {};
+        result.message = 'success';
+        openDb();
+        __db.serialize(function() {
+            var stmt = __db.prepare(SQLS.users.deleteUserByEmail);
+            stmt.run(email, function(err){
+                if (null !== err) {
+                    console.log('DB Error while reading record: ' + err);
+                    result.message = 'fail';
+                }
+                callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
+    }
+
+    this.getUserByEmail = function(callback, res, resStatus, email) {
+        var result = {};
+        result.message = 'success';
+        result.userModel = {};
+        openDb();
+        __db.serialize(function() {
+            var stmt = __db.prepare(SQLS.users.getUserByEmail);
+            stmt.get(email, function(err, row){
+                if (null !== err) {
+                    console.log('DB Error while reading record: ' + err);
+                    result.message = 'fail';
+                    result.userModel = 'DB Error while reading record';
+                } else {
+                    if (null !== row && undefined !== row) {
+                        result.userModel.firstName = row.firstname;
+                        result.userModel.lastName = row.lastname;
+                        result.userModel.email = row.email;
+                    } else {
+                        result.message = 'fail';
+                        result.userModel = 'No such user';
+                    }
+                }
+                callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
+    }
 }
 
 //var localProto = exports.FinmanDb.prototype;

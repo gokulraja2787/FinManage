@@ -4,7 +4,8 @@
  * CGI Server
  */
 var readConfig = require('read-config'), configFileName = './finman.json', port, config,
-http = require('http'), os = require('os'), fs = require('fs'), finmanDB = require('./db').FinmanDb;
+http = require('http'), os = require('os'), fs = require('fs'), finmanDB = require('./db').FinmanDb,
+url = require('url');
 
 /**
  * Read config file name from command line args.
@@ -74,11 +75,17 @@ console.log("CGI Running node at port: " + port);
  */
 function doGet(req, res, resStatus) {
     var context = req.url;
-    if(context.endsWith("/whoareyou")) {
+    if (context.endsWith("/whoareyou")) {
         resjson = readConfig("./cgi/CONST.json");
         writeResponse(res, resjson, resStatus);
-    } else if(context.endsWith("/users/list")) {
+    } else if (context.endsWith("/users/list")) {
         resjson = d.getAllUsers(writeResponse, res, resStatus);
+    } else if (context.indexOf("/users/get") >= 0) {
+        var query = url.parse(req.url, true).query;
+        d.getUserByEmail(writeResponse, res, resStatus, query.email);
+    } else if (context.indexOf("/users/delete") >= 0) {
+        var query = url.parse(req.url, true).query;
+        d.deleteUser(writeResponse, res, resStatus, query.email);
     } else {
         resStatus = '404';
         resjson = {'URL': req.url, 'Status':'Not Found'};
