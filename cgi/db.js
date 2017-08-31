@@ -8,6 +8,9 @@ exports.FinmanDb = function(homeLocation) {
     var homeDir, __db;
     homeDir = homeLocation;
 
+    /**
+     * Opens DB
+     */
     var openDb = function() {
         __db = new sqlite.Database(homeDir + '/DO_NOT_DELETE_OR_MOVE.db', (err) => {
             if(err) {
@@ -17,6 +20,9 @@ exports.FinmanDb = function(homeLocation) {
         });
     }
 
+    /**
+     * Close DB
+     */
     var closeDb = function() {
         if(undefined != __db && null != __db) {
             __db.close(function(error){
@@ -27,11 +33,15 @@ exports.FinmanDb = function(homeLocation) {
         }
     }
 
+    /**
+     * Initializes schemas
+     */
     var initSchema = function() {
         openDb();
         __db.serialize(function(){
             __db.run(SQLS.createSchema.versionTable);
             __db.run(SQLS.createSchema.userTable);
+            __db.run(SQLS.createSchema.bankAccTable);
             __db.all(SQLS.createSchema.readVersion, function(err, rows){
                 var TOTAL_COUNT
                 rows.forEach(function (row) {
@@ -60,12 +70,18 @@ exports.FinmanDb = function(homeLocation) {
         return homeDir;
     }
 
+    /* 
+     * Check and create necessary schemas if don't exist
+     */
     initSchema();
 
     this.whichLocation = function() {
         return getHomeDir();
     }
 
+    /**
+     * Get all users
+     */
     this.getAllUsers = function(callback, res, resStatus) {
         openDb();
         __db.serialize(function(){
@@ -95,6 +111,9 @@ exports.FinmanDb = function(homeLocation) {
         });
     }
 
+    /**
+     * Insert new users
+     */
     this.addUser = function(callback, res, resStatus, firstName, lastName, email) {
         var result = {};
         result.message = 'success';
@@ -117,6 +136,34 @@ exports.FinmanDb = function(homeLocation) {
         });
     }
 
+    /**
+     * Modify given user
+     */
+    this.modifyUser = function(callback, res, resStatus, uid, firstName, lastName, email) {
+        var result = {};
+        result.message = 'success';
+        result.userModel = {};
+        result.userModel.firstName = firstName;
+        result.userModel.lastName = lastName;
+        result.userModel.email = email;
+        openDb();
+        __db.serialize(function(){
+            var stmt = __db.prepare(SQLS.users.updateUserByUid);
+            stmt = stmt.run(firstName, lastName, email, uid, function(err) {
+                if (err) {
+                    console.log('Error while updating record ' + err);
+                    result.message = 'fail';
+                    result.userModel = 'DB ERROR';
+                }
+                callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
+    }
+
+    /**
+     * Delete given user
+     */
     this.deleteUser = function(callback, res, resStatus, email) {
         var result = {};
         result.message = 'success';
@@ -134,6 +181,9 @@ exports.FinmanDb = function(homeLocation) {
         });
     }
 
+    /**
+     * Get user details by email
+     */
     this.getUserByEmail = function(callback, res, resStatus, email) {
         var result = {};
         result.message = 'success';
@@ -148,6 +198,7 @@ exports.FinmanDb = function(homeLocation) {
                     result.userModel = 'DB Error while reading record';
                 } else {
                     if (null !== row && undefined !== row) {
+                        result.userModel.uid = row.uid;
                         result.userModel.firstName = row.firstname;
                         result.userModel.lastName = row.lastname;
                         result.userModel.email = row.email;
@@ -157,6 +208,97 @@ exports.FinmanDb = function(homeLocation) {
                     }
                 }
                 callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
+    }
+
+    /**
+     * Get user details by UID
+     */
+    this.getUserByUID = function(callback, res, resStatus, uid) {
+        var result = {};
+        result.message = 'success';
+        result.userModel = {};
+        openDb();
+        __db.serialize(function() {
+            var stmt = __db.prepare(SQLS.users.getUserByUID);
+            stmt.get(uid, function(err, row){
+                if (null !== err) {
+                    console.log('DB Error while reading record: ' + err);
+                    result.message = 'fail';
+                    result.userModel = 'DB Error while reading record';
+                } else {
+                    if (null !== row && undefined !== row) {
+                        result.userModel.uid = row.uid;
+                        result.userModel.firstName = row.firstname;
+                        result.userModel.lastName = row.lastname;
+                        result.userModel.email = row.email;
+                    } else {
+                        result.message = 'fail';
+                        result.userModel = 'No such user';
+                    }
+                }
+                callback(res, result, resStatus);
+            });
+            stmt.finalize();
+        });
+    }
+
+    /**
+     * Get all bank accounts
+     */
+    this.getAllBankAccs = function(callback, res, resStatus) {
+        openDb();
+        __db.serialize(function(){
+            var result = {};
+            result.message = 'list';
+            result.items = [];
+            __db.each(SQLS.banks.selectAllBankAcc, function (err, row) {
+                if (err) {
+                    console.error('Error in getting bank accounts ');
+                    console.error(err);
+                    result.message = 'error';
+                    result.items = 'Error occured while picking bacnk account details: ' + err;
+                } else {
+                    result.items.push(row);
+                }
+            }, function(err) {
+                if (err) {
+                    console.error('Error in getting bank accounts ');
+                    console.error(err);
+                    result.message = 'error';
+                    result.items = 'Error occured while picking bacnk account details: ' + err;
+                } else {
+                    callback(res, result, resStatus);
+                }
+            });
+            closeDb();
+        });
+    }
+
+    /**
+     * Insert new bank account
+     */
+    this.addBankAccount = function(callback, res, resStatus, accNumber, bankName, displayName, createdByUID) {
+        var result = {};
+        result.message = 'success';
+        result.bankModel = {};
+        result.bankModel.accNumber = accNumber;
+        result.bankModel.bankName = bankName;
+        result.bankModel.displayName = displayName;
+        openDb();
+        __db.serialize(function(){
+            var stmt = __db.prepare(SQLS.banks.addBankAcc);
+            stmt = stmt.run(firstName, lastName, email, function(err) {
+                if (err) {
+                    console.log('Error while inserting record ' + err);
+                    result.message = 'fail';
+                    result.userModel = 'DB ERROR';
+                    callback(res, result, resStatus);
+                } else {
+                    this.getUserByUID(callback, res, resStatus, createdByUID);
+                }
             });
             stmt.finalize();
         });

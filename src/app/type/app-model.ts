@@ -8,6 +8,10 @@ export class AppModel {
         return 'AppModel []';
     }
 
+    public setUid(id: number) {
+        this.id = id;
+    }
+
 }
 
 /**

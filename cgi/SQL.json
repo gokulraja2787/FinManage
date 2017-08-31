@@ -3,12 +3,20 @@
         "versionTable" : "CREATE TABLE IF NOT EXISTS tapp (appname VARCHAR(15) NOT NULL, appversion VARCHAR(8) NOT NULL UNIQUE)",
         "userTable": "CREATE TABLE IF NOT EXISTS tuser (uid INTEGER PRIMARY KEY AUTOINCREMENT, firstname VARCHAR(25), lastname VARCHAR(25) NOT NULL, email VARCHAR(100) NOT NULL UNIQUE)",
         "readVersion" : "SELECT COUNT(*) AS \"TOTAL_COUNT\" FROM tapp",
-        "insertVersion": "INSERT INTO tapp (appname, appversion) VALUES (?, ?)"
+        "insertVersion": "INSERT INTO tapp (appname, appversion) VALUES (?, ?)",
+        "bankAccTable": "CREATE TABLE IF NOT EXISTS tbankaccount (uid INTEGER PRIMARY KEY AUTOINCREMENT, accnum VARCHAR(40) NOT NULL UNIQUE, bankname VARCHAR(40) DEFAULT \"NOT AVAILABLE\", displayname VARCHAR(25) NOT NULL, createdby INTEGER NOT NULL, createdon TEXT NOT NULL, FOREIGN KEY(createdby) REFERENCES tuser(uid))"
     },
     "users": {
         "getAllEmails": "SELECT email FROM tuser",
         "addUser": "INSERT INTO tuser (firstname, lastname, email) VALUES (?, ?, ?)",
-        "getUserByEmail": "SELECT firstname, lastname, email FROM tuser WHERE email = ?",
-        "deleteUserByEmail": "DELETE FROM tuser WHERE email = ?"
+        "getUserByEmail": "SELECT uid, firstname, lastname, email FROM tuser WHERE email = ?",
+        "getUserByUID": "SELECT uid, firstname, lastname, email FROM tuser WHERE uid = ?",
+        "deleteUserByEmail": "DELETE FROM tuser WHERE email = ?",
+        "updateUserByUid": "UPDATE tuser SET firstname = ?, lastname = ?, email = ? WHERE uid = ?"
+    },
+    "banks": {
+        "addBankAcc": "INSERT INTO tbankaccount (accnum, bankname, displayname, createdby, createdon) VALUES (?, ?, ?, ?, date('now'))",
+        "selectAllBankAcc": "SELECT (uid, accnum, bankname, displayname, createdby, createdon) FROM tbankaccount",
+        "updateBankAccByUid": "UPDATE tbankaccount SET accnum = ?, bankname = ?, displayname = ? WHERE uid = ?"
     }
 }

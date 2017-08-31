@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 /**
  * App's authentication service
  */
-
+const STORE_UID = 'finMan.uid';
 const STORE_EMAIL = 'finMan.email';
 const STORE_FNAME = 'finMan.fname';
 const STORE_LNAME = 'finMan.lname';
@@ -27,6 +27,7 @@ export class AuthenticationService implements Callbackable{
      sessionStorage.removeItem(STORE_EMAIL);
      sessionStorage.removeItem(STORE_FNAME);
      sessionStorage.removeItem(STORE_LNAME);
+     sessionStorage.removeItem(STORE_UID);
    }
 
    /**
@@ -80,6 +81,7 @@ export class AuthenticationService implements Callbackable{
    }
 
    setupValue(result: UserModel) {
+    sessionStorage.setItem(STORE_UID, result.getUid().toString());
     sessionStorage.setItem(STORE_FNAME, result.getFirstName());
     sessionStorage.setItem(STORE_LNAME, result.getLastName());
     this.appComponent.toggleNavbarLinks(false);
@@ -90,6 +92,7 @@ export class AuthenticationService implements Callbackable{
 
   getAppModel(jsonResult: any): UserModel {
     const userModel: UserModel = new UserModel();
+    userModel.setUid(jsonResult.userModel.uid);
     userModel.setEmail(jsonResult.userModel.email);
     userModel.setFirstName(jsonResult.userModel.firstName);
     userModel.setLastName(jsonResult.userModel.lastName);

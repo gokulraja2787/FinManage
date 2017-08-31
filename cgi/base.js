@@ -86,6 +86,8 @@ function doGet(req, res, resStatus) {
     } else if (context.indexOf("/users/delete") >= 0) {
         var query = url.parse(req.url, true).query;
         d.deleteUser(writeResponse, res, resStatus, query.email);
+    } else if (context.indexOf("/banks/get") >= 0) {
+        d.getAllBankAccs(writeResponse, res, resStatus, query.email);
     } else {
         resStatus = '404';
         resjson = {'URL': req.url, 'Status':'Not Found'};
@@ -123,7 +125,26 @@ function doPost(req, res, resStatus) {
         });
         req.on('end',function(){
             POST = JSON.parse(bdy);
-            resjson = d.addUser(writeResponse, res, resStatus, POST.firstName, POST.lastName, POST.email);
+            d.addUser(writeResponse, res, resStatus, POST.firstName, POST.lastName, POST.email);
+        });
+    } else if(context.indexOf('/users/update') > -1) {
+        var bdy = '', POST = { };
+        req.on('data', function(data) {
+            bdy += data;
+        });
+        req.on('end',function(){
+            POST = JSON.parse(bdy);
+            d.modifyUser(writeResponse, res, resStatus, POST.uid, POST.firstName, POST.lastName, POST.email);
+        });
+    } else if(context.indexOf('/banks/add') > -1) {
+        var bdy = '', POST = { };
+        req.on('data', function(data) {
+            bdy += data;
+        });
+        req.on('end',function(){
+            POST = JSON.parse(bdy);
+            d.addBankAccount(writeResponse, res, resStatus, POST.accNumber, POST.bankName,
+                POST.displayName, POST.createdByUID);
         });
     } else {
         resStatus = '404';
