@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, Callbackable {
   lname: string;
 
   navbarLinks = [{link: '/home', text: 'Home', disabled: false},
-      {link: '/bam', text: 'Bank Account Management', disabled: false},
+      {link: '/am', text: 'Bank Account Management', disabled: false},
       {link: '/bs', text: 'Budget Sheet', disabled: false}];
 
   constructor(private gateWayService: GatewayService,
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, Callbackable {
 
   public getAppModel(jsonResult: any): AppModel {
     let cgiDetails: CGIAppDetails;
-    cgiDetails = new CGIAppDetails(jsonResult.appName,jsonResult.appVersion);
+    cgiDetails = new CGIAppDetails(jsonResult.appName, jsonResult.appVersion);
     return cgiDetails;
   }
 

@@ -1,3 +1,18 @@
-<p>
-  bam works!
-</p>
+<h6>Bank Account Management</h6>
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+<div class="navbar navbar-default" id="secondary-nav">
+  <div class="collapse navbar-collapse">
+    <ul class="nav navbar-nav mr-auto">
+      <li class="nav-item"> 
+        <a class="nav-link" [routerLink]="['/bam', {outlets: {'auxBamPath': ['listAccounts']}}]" routerLinkActive="active">List Accounts</a> 
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/bam', {outlets: {'auxBamPath': ['addAccounts']}}]" routerLinkActive="active">Add Accounts</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>
+<div class="container">
+  <router-outlet name='auxBamPath'></router-outlet>
+</div>

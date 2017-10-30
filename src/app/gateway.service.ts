@@ -16,7 +16,7 @@ export class GatewayService {
 
   private baseUrl: string;
 
-  constructor(private http: Http) { 
+  constructor(private http: Http) {
     this.baseUrl = MYAPPCONFIG.baseUrl;
    }
 
@@ -71,7 +71,7 @@ export class GatewayService {
           () => callbackObj.setupValue(result));
   }
 
-  private getHeaders(): Headers{
+  private getHeaders(): Headers {
     const headers = new Headers();
     headers.append('Accept', 'application/json');
     return headers;

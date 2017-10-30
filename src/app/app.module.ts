@@ -15,19 +15,29 @@ import { BamComponent } from './bam/bam.component';
 import { AuthenticationService } from './authentication.service';
 import { RegisterComponent } from './register/register.component';
 import { BsComponent } from './bs/bs.component';
+import { AddAccountComponent } from './bam/add-account/add-account.component';
+import { ListAccountComponent } from './bam/list-account/list-account.component';
 
 const appRoutes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'bam', component: BamComponent },
+  {path: 'bam', component: BamComponent, children: [
+    {path: 'listAccounts', component: ListAccountComponent, outlet: 'auxBamPath'},
+    {path: 'addAccounts', component: AddAccountComponent, outlet: 'auxBamPath'}
+  ] },
   {path: 'register', component: RegisterComponent},
   {path: 'bs', component: BsComponent},
   {
     path: '' ,
     redirectTo: '/home',
     pathMatch: 'full'
+  },
+  {
+    path: 'am' ,
+    redirectTo: '/bam/(auxBamPath:listAccounts)',
+    pathMatch: 'full'
   }
-]
+];
 
 @NgModule({
   declarations: [
@@ -36,7 +46,9 @@ const appRoutes: Routes = [
     HomeComponent,
     BamComponent,
     RegisterComponent,
-    BsComponent
+    BsComponent,
+    AddAccountComponent,
+    ListAccountComponent
   ],
   imports: [
     BrowserModule,
