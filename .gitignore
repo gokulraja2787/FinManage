@@ -24,6 +24,9 @@
 !.vscode/extensions.json
 .editorconfig
 
+#Node and angular
+package-lock.json
+
 # misc
 /.sass-cache
 /connect.lock
